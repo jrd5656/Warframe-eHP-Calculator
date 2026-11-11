@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warframe EHP Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            background-color: #0a0a14;
+            background-image: linear-gradient(rgba(10, 10, 20, 0.6), rgba(10, 10, 20, 0.6)),
+                        url('warframe-art.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #e8e8e8;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 25px 40px 25px;
+            background: rgba(15, 15, 25, 0.96);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #e6c87a;
+            margin-bottom: 25px;
+            font-family: 'Chakra Petch', 'Inter', sans-serif;
+            font-size: 2em;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .input-group:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(230, 200, 122, 0.3);
+        }
+        
+        .input-group label {
+            display: block;
+            color: #a8b5c9;
+            font-size: 0.78em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #e6c87a;
+            background: rgba(0,0,0,0.45);
+            box-shadow: 0 0 0 3px rgba(230, 200, 122, 0.15);
+        }
+        
+        .hint {
+            font-size: 0.75em;
+            color: #7a87a3;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        
+        .results-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .results-header {
+            color: #e6c87a;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .result-item {
+            background: rgba(255,255,255,0.04);
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .result-item h4 {
+            color: #7ab8ff;
+            font-size: 0.78em;
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        
+        .result-item .value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #e6c87a;
+        }
+        
+        .adaptation-result {
+            background: rgba(20, 45, 95, 0.3);
+            border: 1px solid rgba(100, 160, 255, 0.4);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 15px;
+        }
+        
+        .adaptation-result h4 {
+            color: #7ab8ff;
+            font-size: 0.8em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .adaptation-result-value {
+            font-size: 1.3em;
+            color: #6bffaa;
+            font-weight: 700;
+        }
+        
+
+        .footer-credit {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.75em;
+            color: #6a7589;
+        }
+        
+        .footer-credit span {
+            color: #8a9bb3;
+        }
+        
+        .composition-block {
+            margin-bottom: 20px;
+        }
+        
+        .composition-title {
+            color: #8a9bb3;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .composition-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78em;
+            color: #a8b5c9;
+            margin-bottom: 6px;
+        }
+        
+        .composition-labels strong {
+            color: #e0e0e0;
+        }
+        
+        .comp-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        
+        .comp-dot-hp { background: #e74c3c; }
+        
+        .comp-dot-shields { background: #4a90d9; }
+        
+        .comp-dot-overguard { background: #2ee6c8; }
+        
+        .composition-bar {
+            display: flex;
+            height: 14px;
+            border-radius: 7px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.4);
+        }
+        
+        .composition-seg {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .comp-hp { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+        
+        .comp-shields { background: linear-gradient(90deg, #3a7bd5, #4a90d9); }
+        
+        .comp-overguard { background: linear-gradient(90deg, #14b8a6, #2ee6c8); }
+        
+        .info-tip {
+            display: inline-block;
+            position: relative;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            background: rgba(122, 184, 255, 0.15);
+            border: 1px solid rgba(122, 184, 255, 0.5);
+            border-radius: 50%;
+            color: #7ab8ff;
+            font-size: 0.8em;
+            font-style: italic;
+            cursor: help;
+            vertical-align: middle;
+        }
+        
+        .info-tip .tip-text {
+            display: none;
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            padding: 12px 14px;
+            background: #10182e;
+            border: 1px solid rgba(122, 184, 255, 0.6);
+            border-radius: 8px;
+            color: #f0f4fa;
+            font-size: 13px;
+            line-height: 1.55;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+            white-space: normal;
+            z-index: 10;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+        
+        .info-tip:hover .tip-text,
+        .info-tip:focus .tip-text {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.6em; letter-spacing: 2px; }
+            .input-grid { grid-template-columns: 1fr; }
+            .container { padding: 20px 15px 30px 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WARFRAME EHP CALCULATOR</h1>
+        
+        <div class="input-grid">
+            <div class="input-group">
+                <label for="hp">Health Points (HP)</label>
+                <input type="number" id="hp" placeholder="Enter HP value" min="0">
+                <p class="hint">Your base health pool. Maximum HP without shields or armor.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="armor">Armor</label>
+                <input type="number" id="armor" placeholder="Enter Armor value" min="0">
+                <p class="hint">Physical damage resistance. ~10% reduction per 100 armor.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="shields">Shields</label>
+                <input type="number" id="shields" placeholder="Enter Shield value" min="0">
+                <p class="hint">Absorbs damage before HP. Drained shields leave you vulnerable.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="ability-dr">Ability Damage Reduction (%)</label>
+                <input type="number" id="ability-dr" placeholder="Enter % value" min="0" max="100" step="1">
+                <p class="hint">From abilities like Limbo, Frost, Ember. Reduces damage to HP and shields.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="overguard">Overguard</label>
+                <input type="number" id="overguard" placeholder="Enter Overguard value" min="0">
+                <p class="hint">Extra health buffer (e.g. Kullervo, Rhino). Armor and Adaptation don't reduce it.</p>
+            </div>
+        </div>
+        
+        <div class="results-section" id="results">
+            <div class="results-header">Results</div>
+            
+            <div class="results-grid">
+                <div class="result-item">
+                    <h4>Base HP <span class="info-tip" tabindex="0">i<span class="tip-text">Your HP &divide; (1 &minus; total damage reduction). The EHP your health pool contributes after all DR.</span></span></h4>
+                    <div class="value" id="result-base-hp">0</div>
+                </div>
+                
+                <div class="result-item">
+                    <h4>Armor DR <span class="info-tip" tabindex="0">i<span class="tip-text">Armor &divide; (Armor + 300). No hard cap for players: DR keeps rising with diminishing returns and approaches but never reaches 100%. The 90% / 2,700 ceiling applies only to enemy level-scaled armor.</span></span></h4>
+                    <div class="value" id="result-armor-dr">0%</div>
+                </div>
+                
+                <div class="result-item">
+                    <h4>Shields <span class="info-tip" tabindex="0">i<span class="tip-text">Your shield pool &divide; (1 &minus; Ability DR). Armor does not protect shields, but ability and Adaptation damage reduction do.</span></span></h4>
+                    <div class="value" id="result-shields">0</div>
+                </div>
+                
+                <div class="result-item">
+                    <h4>Overguard <span class="info-tip" tabindex="0">i<span class="tip-text">Extra health buffer from Warframe abilities (e.g. Kullervo, Rhino). It's a unique health type &mdash; armor and Adaptation DR don't reduce it, so it's added flat.</span></span></h4>
+                    <div class="value" id="result-overguard">0</div>
+                </div>
+                
+                <div class="result-item">
+                    <h4>Total EHP (Normal) <span class="info-tip" tabindex="0">i<span class="tip-text">Base HP + effective Shields + Overguard: the total raw damage you can absorb before dying.</span></span></h4>
+                    <div class="value" id="result-normal-ehp">0</div>
+                </div>
+            </div>
+            
+            <div class="results-grid" id="adaptation-results">
+                <div class="result-item">
+                    <h4>With Adaptation (90% DR) <span class="info-tip" tabindex="0">i<span class="tip-text">Adaptation's 90% DR stacks on top of all your other DR &mdash; both the HP pool and shield pool become 10&times;. Overguard is unaffected by any DR.</span></span></h4>
+                    <div class="value" id="result-adaptation-ehp">0</div>
+                </div>
+            </div>
+            
+            <div class="composition-block">
+                <div class="composition-title">EHP Composition</div>
+                <div class="composition-labels">
+                    <span><span class="comp-dot comp-dot-hp"></span>HP + DR: <strong id="comp-hp-pct">&ndash;</strong></span>
+                    <span><span class="comp-dot comp-dot-shields"></span>Shields: <strong id="comp-shields-pct">&ndash;</strong></span>
+                    <span><span class="comp-dot comp-dot-overguard"></span>Overguard: <strong id="comp-overguard-pct">&ndash;</strong></span>
+                </div>
+                <div class="composition-bar">
+                    <div class="composition-seg comp-hp" id="comp-hp-fill"></div>
+                    <div class="composition-seg comp-shields" id="comp-shields-fill"></div>
+                    <div class="composition-seg comp-overguard" id="comp-overguard-fill"></div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="footer-credit">
+            Made by <span>Jordan</span>
+        </div>
+    </div>
+
+    <script>
+        function formatNumber(value) {
+            return Number.isFinite(value) ? Math.round(value).toLocaleString() : '\u221e';
+        }
+
+        function calculateEHP() {
+            const hp = parseFloat(document.getElementById('hp').value) || 0;
+            const armor = parseFloat(document.getElementById('armor').value) || 0;
+            const shields = parseFloat(document.getElementById('shields').value) || 0;
+            const abilityDr = Math.min(parseFloat(document.getElementById('ability-dr').value) || 0, 100);
+            const overguard = parseFloat(document.getElementById('overguard').value) || 0;
+
+            const armorDr = armor / (armor + 300) * 100;
+            const armorFrac = armorDr / 100;
+            const abilityFrac = abilityDr / 100;
+
+            // Armor protects HP only; Ability DR protects both HP and shields.
+            const shieldDenom = 1 - abilityFrac;
+            const hpDenom = (1 - armorFrac) * shieldDenom;
+            const baseEhp = hp > 0 ? (hpDenom <= 0 ? Infinity : hp / hpDenom) : 0;
+            const shieldsEhp = shields > 0 ? (shieldDenom <= 0 ? Infinity : shields / shieldDenom) : 0;
+            const totalEhp = baseEhp + shieldsEhp + overguard;
+
+            document.getElementById('result-base-hp').textContent = formatNumber(baseEhp);
+            document.getElementById('result-armor-dr').textContent = armorDr.toFixed(1) + '%';
+            document.getElementById('result-shields').textContent = formatNumber(shieldsEhp);
+            document.getElementById('result-overguard').textContent = overguard.toLocaleString();
+            document.getElementById('result-normal-ehp').textContent = formatNumber(totalEhp);
+
+            // EHP composition: share of total EHP from HP pool vs shield pool vs overguard.
+            let hpShare, shShare, ogShare;
+            if (totalEhp <= 0) {
+                hpShare = null;
+            } else if (!Number.isFinite(totalEhp)) {
+                // Both pools go infinite only at 100% Ability DR; the shared (1 - abilityFrac) factor cancels, so use the limiting ratio.
+                const hpBase = hp / (1 - armorFrac);
+                const shBase = shields;
+                const s = hpBase + shBase;
+                hpShare = s > 0 ? hpBase / s * 100 : 0;
+                shShare = s > 0 ? shBase / s * 100 : 0;
+                ogShare = 0;
+            } else {
+                hpShare = baseEhp / totalEhp * 100;
+                shShare = shieldsEhp / totalEhp * 100;
+                ogShare = overguard / totalEhp * 100;
+            }
+            if (hpShare === null) {
+                document.getElementById('comp-hp-pct').textContent = '\u2013';
+                document.getElementById('comp-shields-pct').textContent = '\u2013';
+                document.getElementById('comp-overguard-pct').textContent = '\u2013';
+                document.getElementById('comp-hp-fill').style.width = '0%';
+                document.getElementById('comp-shields-fill').style.width = '0%';
+                document.getElementById('comp-overguard-fill').style.width = '0%';
+            } else {
+                const hpPct = Math.round(hpShare);
+                const ogPct = Math.round(ogShare);
+                document.getElementById('comp-hp-pct').textContent = hpPct + '%';
+                document.getElementById('comp-shields-pct').textContent = (100 - hpPct - ogPct) + '%';
+                document.getElementById('comp-overguard-pct').textContent = ogPct + '%';
+                document.getElementById('comp-hp-fill').style.width = hpShare + '%';
+                document.getElementById('comp-shields-fill').style.width = shShare + '%';
+                document.getElementById('comp-overguard-fill').style.width = ogShare + '%';
+            }
+
+            // Adaptation's 90% DR stacks on top of all other DR, multiplying both the HP pool and shield pool by exactly 10x. Overguard is unaffected.
+            const adaptedTotalEhp = (baseEhp + shieldsEhp) / 0.1 + overguard;
+
+            document.getElementById('result-adaptation-ehp').textContent = formatNumber(adaptedTotalEhp) + ' EHP';
+
+        }
+
+        // Live-update whenever any input changes
+        ['hp', 'armor', 'shields', 'ability-dr', 'overguard'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calculateEHP);
+        });
+
+        // Initial render
+        calculateEHP();
+    </script>
+</body>
+</html>
